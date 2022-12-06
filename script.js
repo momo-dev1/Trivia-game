@@ -33,7 +33,7 @@ async function getQuestions() {
 
         quizArea.innerHTML = "";
         answersArea.innerHTML = "";
-        addQuestionData(questions[currentIndex], questionsCount);
+        addQuestionsData(questions[currentIndex], questionsCount);
 
         handleBullets();
 
