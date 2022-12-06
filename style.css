@@ -35,11 +35,17 @@
     padding: 0 20px 20px;
   }
   .quiz-app .answers-area .answer {
+    text-align: center;
     background-color: #f9f9f9;
     padding: 15px;
+   
   }
   .quiz-app .answers-area .answer:not(:last-child) {
     border-bottom: 1px solid #dfdfdf;
+  }
+  .quiz-app .answers-area .answer input[type="Radio"] {
+    opacity: 0;
+    visibility:hidden;
   }
   .quiz-app .answers-area .answer input[type="Radio"]:checked + label {
     color: #0075ff;
@@ -48,8 +54,9 @@
     cursor: pointer;
     font-weight: bold;
     color: #777;
-    font-size: 14px;
+    font-size: 16px;
     margin-left: 5px;
+    padding:20px;
     position: relative;
     top: -1px;
   }
