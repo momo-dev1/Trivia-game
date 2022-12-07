@@ -6,6 +6,7 @@ let bulletsSpanContainer = document.querySelector(".bullets .spans");
 let quizArea = document.querySelector(".quiz-area");
 let answersArea = document.querySelector(".answers-area");
 let submitButton = document.querySelector(".submit-button");
+let restartButton = document.querySelector(".restart-button");
 let resultsContainer = document.querySelector(".results");
 let countdownElement = document.querySelector(".countdown");
 
@@ -23,6 +24,7 @@ async function getQuestions() {
 
     createBullets(questionsCount)
     addQuestionsData(questions[currentIndex], questionsCount)
+    countdown(30, questionsCount);
 
     submitButton.onclick = () => {
         let theCorrectAnswer = questions[currentIndex].right_answer
@@ -38,8 +40,13 @@ async function getQuestions() {
         handleBullets();
 
         clearInterval(countdownInterval);
-        countdown(3, qCount);
+        countdown(30, questionsCount);
+
+        showResults(questionsCount);
+
+        restartButton.onclick = () => location.reload()
     }
+
 }
 
 getQuestions()
@@ -54,7 +61,6 @@ function createBullets(num) {
         }
         bulletsSpanContainer.appendChild(bullets)
     }
-
 }
 
 function addQuestionsData(obj, count) {
@@ -74,7 +80,7 @@ function addQuestionsData(obj, count) {
             radioInput.id = `answer_${ i }`
             radioInput.name = "question";
             radioInput.type = "radio"
-            radioInput.dataset.answer = `${ obj[`answer_${ i }`] }`
+            radioInput.dataset.answer = obj[`answer_${ i }`]
 
             let label = document.createElement("label")
             let labelText = document.createTextNode(obj[`answer_${ i }`])
@@ -85,7 +91,6 @@ function addQuestionsData(obj, count) {
             answerDiv.appendChild(label)
 
             answersArea.appendChild(answerDiv)
-
         }
     }
 }
@@ -94,11 +99,22 @@ function checkAnswers(rightAnswer, count) {
     let answers = document.getElementsByName("question");
     let theChoosenAnswer;
     for (let i = 0; i < answers.length; i++) {
-        theChoosenAnswer = answers[i].dataset.answer
+        if (answers[i].checked) {
+            theChoosenAnswer = answers[i].dataset.answer
+        }
     }
 
     if (rightAnswer === theChoosenAnswer) {
         rightAnswers++
+    }
+
+}
+
+function restart(count) {
+    if ((currentIndex + 1) > count) {
+        restartButton.addEventListener("click", () => {
+            getQuestions()
+        })
     }
 }
 
@@ -110,6 +126,29 @@ function handleBullets() {
             span.className = "active";
         }
     });
+}
+
+function showResults(count) {
+    let results;
+    if (currentIndex === count) {
+        quizArea.remove()
+        answersArea.remove()
+        submitButton.remove()
+        bullets.remove()
+
+        if (rightAnswers > count / 2 && rightAnswers < count) {
+            results = `<span class="good">Good</span>, ${ rightAnswers } From ${ count }`;
+        } else if (rightAnswers === count) {
+            results = `<span class="perfect">Perfect</span>, All Answers Is Good`;
+        } else {
+            results = `<span class="bad">Bad</span>, ${ rightAnswers } From ${ count }`;
+        }
+
+        resultsContainer.innerHTML = results;
+        resultsContainer.style.padding = "10px";
+        resultsContainer.style.backgroundColor = "white";
+        resultsContainer.style.marginTop = "10px";
+    }
 }
 
 function countdown(duration, count) {
